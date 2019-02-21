@@ -1,21 +1,78 @@
-This file describes scripts designed to search for genes linked to set of the 
-baits defined by user. Scripts given in order of their use general workflow 
-of the pipeline. Pipeline takes as input: BLAST database, coordinates of 
-coding sequences of proteins present in the database and set of baits 
-(coordinates in contigs).
+# ICITY pipeline scripts readme
+### Publication indormation: <todo>
+
+This file describes scripts designed to search for genes linked according to 
+guilt-by-association to set of the baits defined by user. Scripts given in 
+order of their use general workflow of the pipeline. Pipeline takes as input: 
+BLAST database, coordinates of coding sequences of proteins present in the 
+database and set of baits (coordinates in contigs).
+
+This pipeline was designed as simple template that can do basic search and
+analysis. Further modifications can be applied by user to improve some steps,
+like enabling parallelization for some of the steps, implementing advanced 
+clustering or protein profile generation.
 
 Scripts designed to be used in Unix environment and require following programs
 to be installed and path to executables should be exported with "export PATH=":
 Python 3.xx: https://www.python.org/downloads/ (scripts provided for protocol were implemented with python 3.4)
-NCBI BLAST suite: ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ (version 2.7.1 was used for example dataset and scripts provided).
-Clustering tools: mmseqs2 (preferred) can be downloaded at https://github.com/soedinglab/MMseqs2 (mmseqs version used in protocol was downloaded at Jule 2018)  
-Sequence alignment: MUSCLE http://www.drive5.com/muscle/ (MUSCLE v3.7 version was used in the protocol)
+NCBI BLAST suite: ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ 
+(version 2.7.1 was used for example dataset and scripts provided).
+Clustering tools: mmseqs2 (preferred) can be downloaded at https://github.com/soedinglab/MMseqs2 
+(mmseqs version used in protocol was downloaded at Jule 2018)  
+Sequence alignment: MUSCLE http://www.drive5.com/muscle/ 
+(MUSCLE v3.7 version was used in the protocol)
 
-All the scripts can be found at:
+Example datasets for the scripts can be found at:
 ftp://ftp.ncbi.nih.gov/pub/wolf/_suppl/icityNatProt/
 
+This pipeline can be run using standard hardware, however for big datasets
+we advise to run it on multiple cores. For database with 50k genomes, 100 cores
+of super cluster were used.
 
-icity.py
+## Installation guide
+Download scripts to working folder. Create input datasets (proteins database,
+prodein coding position markup for contigs, list of the baits) or download 
+example dataset from FTP. Run the pipeline in automatic mode (icity.py) or 
+manually step by step as described in the paper.
+Typical install time required to download the scripts is less than a minute.
+
+## Demo example
+### Running the pipeline
+Download example dataset and extract it in the working folder
+wget ftp://ftp.ncbi.nih.gov/pub/wolf/_suppl/icityNatProt/Database.tar.gz
+tar zxvf Database.tar.gz
+
+Download set of the baits and extract it in the working folder
+wget ftp://ftp.ncbi.nih.gov/pub/wolf/_suppl/icityNatProt/Seeds.tar.gz
+tar zxvf Seeds.tar.gz
+
+Download scripts to the working folder from https://github.com/ncbi/ICITY/
+
+Verify that parameters in configuration file **config.py** are correct (use
+default parameters for example dataset).
+
+Run the pipeline in automatic mode:
+**python icity.py** 
+
+### Expected output
+The pipeline will generate output files specified in **config.py**
+VicinityPermissiveClustsLinear.tsv - file that contain information about
+protein clusters found in vicinity of the baits. Cluster ID defined by the 
+line number in this file (first line will generate CLUSTER_1 id).
+Relevance.tsv - file that will contain relevance information for the 
+clusters. Following columns will be generated:
+	Cluster ID
+	Effective protein set size in vicinity of baits
+	Effective protein set size in provided protein database
+	Median distance for protein clusters to the baits (as number of ORFs)
+
+### Expected run time for the example dataset
+Expected run time of the pipeline for the example dataset is 1 hour.
+
+
+
+## Scripts descriptions and example of use
+### icity.py
 Python batch file that run all computational steps of the pipeline.  Requires all python files described below.
 Script reads config.py file for input parameters and executes following steps of the pipeline:
 	Step 5, Identify protein-coding genes around the baits
@@ -34,7 +91,7 @@ results will be stored in files specified in config.py (default files are: Relev
 metric for all clusters, VicinityPermissiveClustsLinear.tsv - contains information about cluster members)
 
 
-config.py
+### config.py
 Configuration file for icity.py. Have the following fields:
 ICITY_CONFIG_INPUT - Parameters of the pipeline
 #Parameter Name					Value for the example dataset	Description
@@ -47,14 +104,14 @@ SortingOverlapThreshold			0.4								Overlap threshold to sort BLAST hits
 SortingCoverageThresold			0.25							Coverage threshold to sort BLAST hits
 
 ICITY_CONFIG_OUTPUT - Output files of the pipeline
-#Parameter Name				Example Value						Description
+###### Parameter Name				Example Value						Description
 ICITYFileName				Relevance_09.tsv					File with ICITY values for protein clusters 
 VicinityClustersFileName	VicinityPermissiveClustsLinear.tsv	File with protein clusters information 
 
 ICITY_CONFIG_TEMPORARYFILES - List of temporary files generated by the pipeline
 
 
-SelectNeighborhood.py
+### SelectNeighborhood.py
   -h, --help  show this help message and exit
   -p P        PTYDataFileName, complete pty for contigs. PTY file should 
 			  contain following values: 
@@ -75,7 +132,7 @@ run and save it into Vicinity.tsv file run:
 python SelectNeighborhood.py -p Database/CDS.pty -s Seeds.tsv -o Vicinity.tsv -d 10000
 
 
-sh RunClust.sh
+### sh RunClust.sh
 -	Argument 1: FASTA file name
 -	Argument 2: Sequence similarity clustering threshold
 -	Argument 3: Result clusters FileName
@@ -89,7 +146,7 @@ VicinityPermissiveClustsLinear.tsv run following command
 sh RunClust.sh Vicinity.faa 0.3 VicinityPermissiveClustsLinear.tsv
 
 
-RemoveFASTAIDRedundency.py
+### RemoveFASTAIDRedundency.py
   -h, --help  show this help message and exit
   -f F        FASTA file name
 Script removes everything except first ID in FASTA ID line in the file
@@ -102,7 +159,7 @@ to
 >1000270260
 
 
-ConvertOutput.py:
+### ConvertOutput.py:
   -h, --help  show this help message and exit
   -f F        Cluster file name
 Script converts mmseq tab separated file output to file where each line present
@@ -116,15 +173,15 @@ Will convert VicinityPermissiveClusts.tsv to new format in
 VicinityPermissiveClustsLinear.tsv
 
 
-MakeProfiles.py
+### MakeProfiles.py
   -h, --help  show this help message and exit
   -f F        Clusters file name
   -c C        Folder name where profiles will be saved
   -d D        Path to protein database
 Script will create protein profile for proteins from genomic database using 
 MUSCLE for each permissive cluster in and save it to CLUSTERS folder with 
-ì.aliî extension and CLUSTER_ prefix with line number after as cluster ID, if 
-directory donít exists it will create it.
+‚Äú.ali‚Äù extension and CLUSTER_ prefix with line number after as cluster ID, if 
+directory don‚Äôt exists it will create it.
 
 Example:
 python MakeProfiles.py -f VicinityPermissiveClustsLinear.tsv -c CLUSTERS/ -d Database/ProteinsDB
@@ -132,7 +189,7 @@ Script will make profiles for each line presented in
 VicinityPermissiveClustsLinear.tsv and save it to CLUSTERS folder.
 
 
-RunPSIBLAST.py
+### RunPSIBLAST.py
   -h, --help  show this help message and exit
   -c C        Folder name where profiles stored
   -d D        Path to protein database
@@ -146,7 +203,7 @@ Will take sequence alignments in CLUSTERS folder, run PSIBLAST and save result
 with .hits extension to the same folder
 
 
-GetIcityForBLASTHits.py
+### GetIcityForBLASTHits.py
   -h, --help  show this help message and exit
   -f F        Sorted PSIBLAST hits file name
   -o O        Result tsv file
@@ -161,7 +218,7 @@ Example:
 python GetIcityForBLASTHits.py -f ClusterHitsFileName -o ResultFileName -d PathToDatabase -c PermissiveClustersFileName
 
 
-RunEffectiveSizeEstimation.sh
+### RunEffectiveSizeEstimation.sh
 -	Argument 1: Folder name with permissive cluster BLAST hits.
 Script run GetIcityForBLASTHits.py for each cluster blast hits file specified
 in the folder. Saves results into separate file for each cluster in the same 
