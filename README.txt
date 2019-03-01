@@ -43,12 +43,12 @@ Typical install time required to download the scripts is less than a minute.
 ## Demo example
 ### Running the pipeline
 Download example dataset and extract it in the working folder
-wget ftp://ftp.ncbi.nih.gov/pub/wolf/_suppl/icityNatProt/Database.tar.gz
-tar zxvf Database.tar.gz
+wget ftp://ftp.ncbi.nih.gov/pub/wolf/_suppl/icityNatProt/Set1.Database.tar.gz
+tar zxvf Set1.Database.tar.gz
 
 Download set of the baits and extract it in the working folder
-wget ftp://ftp.ncbi.nih.gov/pub/wolf/_suppl/icityNatProt/Seeds.tar.gz
-tar zxvf Seeds.tar.gz
+wget ftp://ftp.ncbi.nih.gov/pub/wolf/_suppl/icityNatProt/Set1.Seeds.tar.gz
+tar zxvf Set1.Seeds.tar.gz
 
 Download scripts to the working folder from https://github.com/ncbi/ICITY/
 
