@@ -84,7 +84,7 @@ subprocess_call("Step 11: Sorting blast hits", "python SortBLASTHitsInMemory.py 
                 " -z " + str(config.ICITY_CONFIG_INPUT["SortingOverlapThreshold"]) +
                 " -x " + str(config.ICITY_CONFIG_INPUT["SortingCoverageThresold"]))
 
-subprocess_call("Step 12: Calculating ICITY metric", "bash RunEffectiveSizeEstimation.sh " +
+subprocess_call("Step 12: Calculating ICITY metric", "bash CalculateICITY.sh " +
                 config.ICITY_CONFIG_TEMPORARYFILES["SortedBLASTHitsFolder"] + " " +
                 config.ICITY_CONFIG_INPUT["PathToDatabase"] + " " +
                 config.ICITY_CONFIG_OUTPUT["VicinityClustersFileName"])

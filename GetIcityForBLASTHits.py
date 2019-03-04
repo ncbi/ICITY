@@ -145,6 +145,7 @@ AllClusterCount, Tmp = GetEffectiveNoFromAlignment(ClusterHits, SortedHitsFileNa
 BaitClusterCount, DistToBait = GetEffectiveNoFromAlignment(ClusterHits, SortedHitsFileName, FilterField= HIT_IsInVicinity)
 
 with open(ResultFileName, "w") as ResultFile:
-    ResultFile.write(ClusterId + "\t" + str(BaitClusterCount) + "\t" + str(AllClusterCount) + "\t" + str(DistToBait) + "\n")
+    ResultFile.write(ClusterId + "\t" + str(BaitClusterCount) + "\t" + str(AllClusterCount) + "\t" +
+                     str(DistToBait) + "\t" + str(BaitClusterCount / AllClusterCount) + "\n")
 
 
