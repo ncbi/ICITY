@@ -87,9 +87,6 @@ subprocess_call("Step 11: Sorting blast hits", "python SortBLASTHitsInMemory.py 
 subprocess_call("Step 12: Calculating ICITY metric", "bash CalculateICITY.sh " +
                 config.ICITY_CONFIG_TEMPORARYFILES["SortedBLASTHitsFolder"] + " " +
                 config.ICITY_CONFIG_INPUT["PathToDatabase"] + " " +
-                config.ICITY_CONFIG_OUTPUT["VicinityClustersFileName"])
-
-
-subprocess_call("Step 13: Collecting results", "cat " +
-                config.ICITY_CONFIG_TEMPORARYFILES["SortedBLASTHitsFolder"] + "/*.tsv > " + config.ICITY_CONFIG_OUTPUT["ICITYFileName"])
+                config.ICITY_CONFIG_OUTPUT["VicinityClustersFileName"] + " " +
+                config.ICITY_CONFIG_OUTPUT["ICITYFileName"])
 
