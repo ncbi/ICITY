@@ -57,7 +57,10 @@ def AddTargetHitsValues(TargetHitsFileName, TargetHitsDict, ProteinInfoDict):#Ta
             Start = int(LineValues[BLAST_FORMAT_ALIGNMENT_START])
             Stop = int(LineValues[BLAST_FORMAT_ALIGNMENT_STOP])
             Score = int(LineValues[BLAST_FORMAT_ALIGNMENT_SCORE])
-            ProteinID = LineValues[BLAST_FORMAT_ALIGNMENT_TARGET_PROTEIN_ID].split("|")[1] # gi|ID| format expected
+            if "|" in LineValues[BLAST_FORMAT_ALIGNMENT_TARGET_PROTEIN_ID]:
+                ProteinID = LineValues[BLAST_FORMAT_ALIGNMENT_TARGET_PROTEIN_ID].split("|")[1] # gi|ID| format expected
+            else:
+                ProteinID = LineValues[BLAST_FORMAT_ALIGNMENT_TARGET_PROTEIN_ID]
 
             HitLine = [ProteinID, Score, Start, Stop, LineValues[BLAST_FORMAT_ALIGNMENT_SEQUENCE], ClusterId]
             HitLine.extend(ProteinInfoDict[ProteinID])
